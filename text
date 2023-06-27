@@ -1,0 +1,274 @@
+  GIT简介
+项目的开发是一个不断选代的过程,开发过程中程序员需要不断的对代码进行编写和更正。
+这就带来很多的问题。首先,开发中代码会存在多个版本,我们如何将代码在多个版本间进行切换?
+第二,代码上线后,如何在不影响现行开发工作的情况下对代码进行维护?
+第三,开发时某段代码被多人修改时,如何处理代码的冲突问题?除此之外,还有存储效率、远程仓库等问题。
+
+git是一个免费开源的版本控制系统,它被设计用来快速高效地管理项目开发的源码。
+通过git可以跟踪代码的状态,也可以在修改代码后对代码状态进行存储,还可以在需要时将已经修改过的
+代码恢复到之前存储的状态。更强大的是使用git管理代码时,
+可以创建代码分支(branch)代码分支相当于一段独立的代码记录,我们可以在分支上对代码进行任意的修改,
+而这个修改只会影响当前分支,不会对其他分支产生影响。同时,可以对分支进行合并,
+合并后一个分支的修改便可在另一分支上生效。总之,git是当今最优秀的版本控制工具!
+
+文件状态
+git中的文件有两种状态:未跟踪和已跟踪。未跟踪指文件没有 git管理。
+已跟踪的文件又有三种状态:未修改、修改和暂存。
+
+暂存,表示文件修改已经保存,但是尚未提交到git仓库
+
+未修改,表示磁盘中的文件和git仓库中文件相同,没有修改。
+
+已修改,表示磁盘中文件已经被修改,和git仓库中文件不同
+
+可以通过git status来查看文件的状态
+
+已修改 --> 暂存 --> 放到仓库 放到仓库以后这个文件就变成未修改了
+
+
+使用git的时候需要给git进行一些配置
+配置：
+   name
+     git config --global user.name "fjl"
+   email
+     git config --global user.email "1959576588@qq.com"
+    
+使用git:
+    git status 
+    -查看当前仓库的状态
+fatal: not a git repository (or any of the parent directories): .git 这句话表示我们现在这个目录没有被git所管理
+ not a git repository 不是一个git仓库
+
+ On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+上面代码表示仓库已经完成了初始化
+
+文件状态：
+   1.未跟踪
+   2.已跟踪
+   3.暂存
+   4.未修改
+   5.已修改
+
+    
+     git init
+      -初始化git仓库
+    Initialized empty Git repository (初始化了一个空的git仓库)
+    如何识别出我们的项目有没有被git管理 就看它里面有没有 .git这个文件夹 有这个文件夹证明它现在被git管理了
+    如果没有就证明没有被管理
+
+    刚刚添加到项目中的文件处于未跟踪状态
+    Untracked(未跟踪) files:
+  (use "git add <file>..." to include in what will be committed)
+        1.txt
+    未跟踪 --> 暂存(已跟踪)
+    git add 1.txt  git add <filename> 将文件切换到暂存的状态
+     git status 查看当前仓库的状态 
+       On branch master
+
+       No commits yet
+
+      Changes to be committed: (文件已经改变但是还没有提交)
+       (use "git rm --cached <file>..." to unstage)
+        new file:   1.txt (new file:   1.txt 是绿色的表示暂存状态)
+
+     暂存 --> 未修改
+        git commit -m "第一次提交1.txt" 将暂存的文件存储到仓库中 -m(message)表示文件提交的信息
+        表示往仓库里面存了一个文件txt commit使文件暂存变成了未修改 commit是把它入库 入库以后
+        我们这个时候文件的状态变成了未修改
+        [master (root-commit) e2097f6] 第一次提交1.txt
+        1 file changed, 1 insertion(+)
+         create mode 100644 1.txt
+        
+        git status
+        On branch master
+        nothing to commit, working tree clean(没有什么东西需要提交的 我们的工作树很干净 ) 
+        (也就是我们当前目录下 当前我磁盘中的文件跟我git仓库中的文件是一样的没有发生任何变化那
+        这种状态就表示我们的代码处于未修改的状态)
+
+        未修改 --> 修改
+          修改代码后,文件会变为修改状态
+          git status
+
+          On branch master
+        Changes not staged for commit:
+        (use "git add <file>..." to update what will be committed)
+        (use "git restore <file>..." to discard changes in working directory)
+    modified:   1.txt (修改之后 modified:   1.txt 变成红颜色这个时候表示 1.txt它是一个修改的状态
+     这个文件现在已经被我修改了 )
+        no changes added to commit (use "git add" and/or "git commit -a")
+
+        那么修改以后我们怎么让这个修改在仓库当中生效
+        同样还是这个步骤  现在我需要从修改变为未修改的状态 怎么办
+        首先我要暂存 暂存完了之后在 commit 才能变为未修改
+
+        首先 git add 1.txt 把它变成暂存状态
+        On branch master
+       Changes to be committed:
+        (use "git restore --staged <file>..." to unstage)
+        modified:   1.txt(modified:   1.txt是绿色的)
+
+        然后在执行 git commit -m "修改1.txt" 把它变为未修改状态
+        [master 4e027c2] 修改1.txt
+        1 file changed, 2 insertions(+), 1 deletion(-)
+
+        git status
+        On branch master
+         nothing to commit, working tree clean
+
+         我们的代码每一次修改完了都是这个过程需要先 暂存(add) 然后再提交(commit)是把它变为未修改的状态
+         那么现在就等于我们的修改 我们的操作就已经存到这个库当中了 并且当我们去执行 git log的
+         时候 我们可以看到我们每一次的记录
+
+      git add * 把所有未跟踪(已修改)的文件都变成暂存 
+      git commit -a -m "xxxx" (-a 表示提交所有未修改 相当于把没有设置为暂存的设置为暂存 然后在commit)
+       提交所有已修改的文件 (未跟踪的文件不会提交)
+
+       git restore <filename> 恢复文件 重置项目到最新状态 把文件从已修改变为未修改的状态
+       git restore * 把所有文件都进行重置
+       git rm <filename> 删除文件 把文件从磁盘里删除了 同时我也从我的git仓库里面删除了但是现在还没有提交 因为现在还没有进入到一个暂存
+       我只是把文件删除了 我们需要去提交
+       执行完 git rm以后再执行 git status来查看文件的状态
+       On branch main
+      Changes to be committed:
+      (use "git restore --staged <file>..." to unstage)
+        deleted:    1.txt 
+        rm删除文件以后执行 git commit -m "xxxx" 进行提交 文件就会被我们删除 
+        从我们的系统里包括我们的仓库里都会被删除
+
+        当我们去删除文件的时候会有一个保护机制 如果你的文件是没有修改的就是刚从库里
+        取出来的未修改的一个状态那这个文件爱怎么删怎么删
+        但是当你的文件已修改了之后 你去执行 rm 删除 会把你新添加的内容一起删除掉了
+        这个时候它为了避免你丢失这些数据它就不让你删除 如果你执意要删除可以
+        执行 git rm <filename> -f 强行删除文件
+
+        git restore --staged <filename> 
+        把文件从暂存状态取消 但是它不会取消你的操作 
+        如果你之前操作删除了文件就是删除了
+        可以用 git restore <filename> 恢复文件
+        On branch main
+        Changes not staged for commit:
+         (use "git add/rm <file>..." to update what will be committed)
+        (use "git restore <file>..." to discard changes in working directory)
+        deleted:    1.txt(这里的字是红色的表示没有暂存)
+
+          no changes added to commit (use "git add" and/or "git commit -a")
+
+        移动文件
+         git mv from to 移动文件 重命名文件
+         比如 git mv .\1.txt .\2.txt 把1.txt重命名为2.txt
+         执行 git status 显示
+         On branch main
+            Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                renamed:    1.txt -> 2.txt
+
+        分支
+         git在存储文件时,每一次代码的提交都会创建一个与之对应的节点,
+         git就是通过一个一个的节点来记录代码的状态的,节点会构成一个树状结构
+         就意味着这个树会存在分支,默认情况下仓库只有一个分支,命名为master
+         在使用git时,可以创建多个分支,分支与分支之间相互独立,
+         在一个分支上修改代码不会影响其他的分支。
+         在开发中,都是在自己的分支上编写代码,代码编写完成后没有问题了,在将自己的
+         分支合并到主分支中
+
+         当我们做提交的时候 git commit -m "xxxx" git会在仓库里面建立一个新的节点
+         这个节点就是用来记录代码当前的状态的 比如代码中有哪些文件 文件里包含哪些内容 是谁改的...
+         所有这些信息都会保存到这个节点里
+         我们每一次  commit 实际上就是在创建一个一个节点 每一次commit都会创建一个节点
+         然后我们的操作信息都在这些节点里存着
+
+         git log 日志 可以看到git操作的记录 输入q退出这个模式
+         git branch 查看当前分支
+         git branch <branch name>创建新的分支
+         git branch test 创建一个新分支 test
+         git branch -d <branch name> 删除分支
+         git switch test 切换分支到 test
+             Switched to branch 'test'
+         git switch <branch name> 切换分支
+         git switch -c <branch name > 创建并切换分支
+
+         合并分支
+           先切换到原来的主分支  git switch <branch name> 
+           再执行 git merge <branch name> 用主分支去合并修改后的分支
+           Updating 9f8da20..de2ea2e
+            Fast-forward(快速合并 因为在一条线上)
+            index.html | 2 ++
+            1 file changed, 2 insertions(+)
+
+        合并分支 下面情况是在不同线上进行合并不能快速合并
+          Auto-merging index.html ()
+          CONFLICT (content): Merge conflict in index.html (合并冲突在index.html内 因为两个分支都改了同一个文件)
+          Automatic merge failed(自动合并失败); fix conflicts and then commit the result.(需要手动的去处理这个冲突)
+
+        变基(rebase)
+        在开发中除了通过merge来合并分支外,还可以通过变基来完成分支的合并。
+        我们通过merge合并分支时,在提交记录中会将所有的分支合并的过程全部显示出来,这样当项目比较复杂,
+        开发过程比较波折时,我们必须要反复的创建、合并、删除分支。
+        这样一来将会使得我们代码的提交记录变得极为混乱
+
+        原理(变基时发生了什么):
+        1.当我们发起变基时,git会首先找到两条分支的最近的共同祖先(比方说两个分支的交点)
+        2.对比当前分支(要变基的分支)相对于共同祖先之后的所有历史提交,并且将它们提取出来存储到一个临时文件中
+        3.将当前部分(提取出来的临时文件)指向目标的基底
+        4.以当前基底开始,重新执行历史操作
+
+        要改变哪一个分支的基就switch切换到它 然后执行 git rebase <brance name>(主分支)
+
+        git rebase <branch name>把当前分支的基 指向主分支的基底 变基完成之后 合并分支还没完
+        git switch <branch name> 回到主分支 然后 git merge <branch name> 在主分支上合并另一个分支
+        最后执行 git branch -d <brance name>删除被合并的分支
+
+        变基的过程跟merge的过程是一样的
+        变基和merge对于合并分支来说最终的结果是一样的! 但是变基会使得代码的提交记录更整洁更清晰
+        注意! 大部分情况下合并和变基是可以互换的 但是如果分支已经提交给了远程仓库那么这时尽量不要使用变基。
+        变基这种操作一定是在我们本地变完了以后再传服务器上
+
+        远程仓库(remote)
+        git是我们代码管理工具 它是一个程序 提供了一些命令如 rebase merge init..让我们操作代码
+        Github 是我们远程的git仓库 可以把我们的代码存到远程的仓库 就可以让多人去访问这个仓库了
+
+        目前我对于git所有的操作都是在本地进行的,在开发中显然不能这样的,这时我们就需要一个远程的git仓库,
+        远程的git仓库和本地的本质没有什么区别 不同点在于远程的仓库可以被多人同时访问使用,方便我们协同开发
+        在实际工作中,git的服务器通常由公司搭建内部使用或是购买一些公关的私有git服务器
+        我们学习阶段,直接使用一些开放的公共git仓库 目前我们常用的库有两个:Github和Gitee(码云)
+
+        将本地库上传git:
+        git remote add origin https://github.com/fjlyjc/git-demo.git
+        (remote 远程库) (origin 远程库的名字) (url 仓库的地址)
+        git remote add <remote name> <url>
+        执行这个命令就会多一个远程库在REMOTES中 可以把git和远程库关联起来
+
+        git branch -M main
+        修改分支的名字为main
+
+        git push -u origin main
+        git push 将代码上传到服务器上 这里的origin要和 指定的远程分支的名字相同 
+        main 也要和本地分支相同
+
+        将本地库上传到gitee:
+        
+        git remote add origin https://gitee.com/fjlyjc/git-demo.git
+        git push -u origin "master"
+
+        git remote add gitee https://gitee.com/fjlyjc/git-demo.git
+        git push -u gitee main
+        如果你上传了Github 和码云 这里的origin 和 master需要改一下
+
+        如何从码云中下载代码
+         新建一个文件夹 在码云上 点击 克隆 复制地址 然后打开新建的文件 右键打开命令
+         窗口 输入 git clone <url 复制的地址> 回车 就可以了
+         如何删除码云中的仓库
+         点击管理 --> 删除仓库 --> 再次点击删除仓库 --> 输入路径 --> 密码验证
+
+
+        如何从 Github中下载代码 
+         新建一个文件夹 在 Github 上 点击 code 复制地址 然后打开新建的文件 右键打开命令
+         窗口 输入 git clone <url 复制的地址> 回车 就可以了
+         
+
+
+ 
